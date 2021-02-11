@@ -1,0 +1,11 @@
+.table {
+  border: 1px double;
+}
+
+.table__caption {
+  font-weight: bold;
+}
+
+.table__data {
+  border: 1px solid;
+}

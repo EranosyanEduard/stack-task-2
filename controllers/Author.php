@@ -24,4 +24,9 @@ class ControllerAuthor extends Controller
         $this->updatePageTemplate('main');
         $this->getRecords();
     }
+
+    public function includeAuthor(): ?array
+    {
+        return $this->fetchRecordFromTable(['name' => $_POST['author']]);
+    }
 }

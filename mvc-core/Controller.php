@@ -29,8 +29,12 @@ class Controller
 
     public function getRecords()
     {
-        $query_result = $this->model->selectAllRecords();
-        $this->renderPage($query_result);
+        if (count($_GET)) {
+            $this->getRecordsWithCondition();
+        } else {
+            $query_result = $this->model->selectRecords(null);
+            $this->renderPage($query_result);
+        }
     }
 
     public function getInsertId()
@@ -42,7 +46,7 @@ class Controller
     {
         $req_params = is_array($req_params) ? $req_params : $_POST;
         if ($this->isValidRequestParams($req_params, $this->model_attributes)) {
-            $query_string = $this->getQueryString($req_params);
+            $query_string = $this->getQueryExpression($req_params);
             $query_result = $this->model->insertRecord($query_string);
             $this->renderPage($query_result);
         } else {
@@ -72,7 +76,7 @@ class Controller
             $filtered_req_params = array_filter($_REQUEST, function ($_, $field_name) {
                 return $field_name !== 'id';
             }, 1);
-            $query_string = $this->getQueryString($filtered_req_params);
+            $query_string = $this->getQueryExpression($filtered_req_params);
             $query_result = $this->model->updateRecord($_REQUEST[$required_param], $query_string);
             $this->renderPage($query_result);
         } else {
@@ -83,6 +87,27 @@ class Controller
     public function updatePageTemplate($template_id)
     {
         $this->current_page_template = $this->page_templates[$template_id];
+    }
+
+    private function getRecordsWithCondition()
+    {
+        if ($this->isValidRequestParams(
+            $_GET, array_merge($this->model_attributes, ['id']), false
+        )) {
+            $query_string = $this->getQueryExpression($_GET, ' AND ');
+            $query_result = $this->model->selectRecords($query_string);
+            $this->renderPage($query_result);
+        } else {
+            self::renderPageWithTip('query contains invalid params', 400);
+        }
+    }
+
+    protected function fetchRecordFromTable($condition): ?array
+    {
+        $query_string = $this->getQueryExpression($condition, ' AND ');
+        $query_result = $this->model->selectRecords($query_string);
+        $record = mysqli_fetch_array($query_result);
+        return count($record) ? $record : null;
     }
 
     private function isValidRequestParams($request_params, $required_params, $use_strict = true): bool
@@ -112,12 +137,12 @@ class Controller
         }
     }
 
-    private function getQueryString($req_params): string
+    private function getQueryExpression($req_params, $arr_separator = ','): string
     {
         $get_query_expression = function ($field_name, $field_value) {
             return "$field_name = '" . strtolower($field_value) . "'";
         };
-        return join(',', array_map(
+        return join($arr_separator, array_map(
             $get_query_expression,
             array_keys($req_params),
             array_values($req_params)

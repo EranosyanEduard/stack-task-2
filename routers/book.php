@@ -11,8 +11,13 @@ if (isset($mysql_link)) {
 
     if (isset($controller_author)) {
         $book_router->post('/', function () use ($controller_author, $controller_book) {
-            $controller_author->addAuthor();
-            $_POST['author_id'] = $controller_author->getInsertId();
+            $author = $controller_author->includeAuthor();
+            if ($author) {
+                $_POST['author_id'] = $author['id'];
+            } else {
+                $controller_author->addAuthor();
+                $_POST['author_id'] = $controller_author->getInsertId();
+            }
             $controller_book->addBook();
         });
     }

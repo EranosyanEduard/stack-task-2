@@ -1,9 +1,27 @@
 <?php
+require_once './models/Author.php';
 
-class AuthorController extends Controller
+class ControllerAuthor extends Controller
 {
-  public function __construct($db_link)
-  {
-    parent::__construct($db_link, AuthorModel::class, ['name']);
-  }
+    public function __construct($db)
+    {
+        parent::__construct(
+            $db,
+            ModelAuthor::class,
+            ['name'],
+            ['main' => 'page-with-authors.php']
+        );
+    }
+
+    public function addAuthor()
+    {
+        $this->updatePageTemplate('fallback');
+        $this->postRecord(['name' => $_POST['author']]);
+    }
+
+    public function getAuthors()
+    {
+        $this->updatePageTemplate('main');
+        $this->getRecords();
+    }
 }

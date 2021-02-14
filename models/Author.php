@@ -1,9 +1,9 @@
 <?php
 
-class AuthorModel extends Model
+class ModelAuthor extends Model
 {
-  public function __construct($db_link)
-  {
-    parent::__construct($db_link, 'authors');
-  }
+    public function __construct($db)
+    {
+        parent::__construct($db, 'authors');
+    }
 }

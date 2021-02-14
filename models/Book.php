@@ -1,9 +1,9 @@
 <?php
 
-class BookModel extends Model
+class ModelBook extends Model
 {
-  public function __construct($db_link)
-  {
-    parent::__construct($db_link, 'books');
-  }
+    public function __construct($db)
+    {
+        parent::__construct($db, 'books');
+    }
 }

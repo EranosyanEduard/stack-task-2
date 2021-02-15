@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "1bbed409-908f-4ae1-a1ec-8a0c7e5301ca",
-		"name": "Stack: task-2",
+		"name": "Stack-task-2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -72,6 +72,34 @@
 					"port": "8888",
 					"path": [
 						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8888/books?name=book-1&publication_date=2021-01-01",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "book-1"
+						},
+						{
+							"key": "publication_date",
+							"value": "2021-01-01"
+						}
 					]
 				}
 			},
